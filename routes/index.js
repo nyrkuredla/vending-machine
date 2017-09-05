@@ -1,21 +1,32 @@
 const router = require('express').Router();
 const Purchase = require('../models/Purchase');
 const Item = require('../models/Item');
+const { getAllItems, addItem, getItemById, updateItem, getAvailableItems } = require('../dal.js')
+const bodyParser = require('body-parser')
 
 //vendor routes
 router
   .route('/api/vendor/items')
   .get(function (req, res) {
-    res.status(200).send('all items go here')
+    getAllItems().then(function (users) {
+      console.log(users)
+      res.status(200).json(users)
+    })
   })
   .post(function (req, res) {
-    res.status(200).send('new items posted here')
+    console.log(req.body)
+    addItem(req.body).then(function(newItem){
+    res.status(200).send('new item posted')
   })
+})
 
 router
   .route('/api/vendor/items/:itemId')
   .put(function (req, res) {
-    res.status(200).send('update items here')
+    console.log(req.body)
+    // updateItem(req.body).then(function(itemNew) {
+      res.status(200).send('item updated')
+    // })
   })
 
 router
@@ -35,7 +46,9 @@ router
 router
   .route('/api/customer/items')
   .get(function (req, res) {
-    res.status(200).send('available items go here')
+    getAvailableItems().then(function (items){
+    res.status(200).json(items)
+  })
   })
 
 router
