@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Purchase = require('../models/Purchase');
 const Item = require('../models/Item');
-const { getAllItems, addItem, getItemById, updateItem, getAvailableItems } = require('../dal.js')
+const { getAllItems, addItem, getItemById, updateItem, getAvailableItems, purchaseItem, addPurchase, getAllPurchases, getVendorTotal } = require('../dal.js')
 const bodyParser = require('body-parser')
 
 //vendor routes
@@ -32,14 +32,16 @@ router
 router
     .route('/api/vendor/purchases')
     .get(function (req, res) {
-      res.status(200).send('list of purchases goes here')
+      getAllPurchases().then(function (vendorMoney) {
+        res.status(200).json(vendorMoney)
+      })
     })
 
 router
   .route('/api/vendor/money')
   .get(function (req, res) {
-    res.status(200).send('money displayed here')
-  })
+    res.status(200).json(getVendorTotal())
+    })
 
 //customer routes
 
@@ -54,7 +56,14 @@ router
 router
   .route('/api/customer/items/:itemId/purchases')
   .post(function (req, res) {
-    res.status(200).send('items get purchased here')
-  })
+    let customerMoney = req.body;
+    let itemId = req.params.itemId;
+    purchaseItem(customerMoney, itemId);
+    res.status(200).send('yay')
+    // purchaseItem(customerMoney, itemId).then(function(kaching) {
+    //   // res.status(200).json(kaching)
+    // })
+  }
+  )
 
 module.exports = router;
