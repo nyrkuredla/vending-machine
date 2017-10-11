@@ -51,19 +51,21 @@ function purchaseItem(customerMoney, itemId){
   return getItemById(itemId).then(function (item) {
     console.log('customer money: ', customerMoney)
     console.log('item', item)
+    //take description, etc as arguments in the function params: addPurchase ({ description, cost...}) and then add in: newPurchase = new Purchase({description, etc.})
     let newPurchase = {
       "description" : item.description,
       "cost": item.cost,
       "quantity": item.quantity,
-      "date": Date.now()
+      "time": Date.now()
     }
-      console.log(newPurchase);
+      console.log('you purchased: ', newPurchase);
       vendorMoney += item.cost;
-      console.log(vendorMoney);
+      console.log('vendor money ', vendorMoney);
       let itemCost = item.cost;
-      return vendorMoney;
-      // returnChange(customerMoney, itemCost);
-      // return addPurchase(newPurchase);
+      let change = returnChange(customerMoney, itemCost);
+      addPurchase(newPurchase);
+      let receipt = {"purchase" : newPurchase, "change" : change}
+      return receipt;
     }
   )}
 
@@ -81,7 +83,6 @@ function getVendorTotal() {
 
 function returnChange(customerMoney, itemCost) {
   customerMoney -= itemCost;
-  console.log(customerMoney)
   let changeAlert = {'change': customerMoney}
   return changeAlert;
 }
